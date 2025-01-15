@@ -25,11 +25,11 @@ public class LoginScreen {
         initializeComponents();
         addResizeListener();
     }
-
+    //Method to initialize all components
     private void initializeComponents() {
         Image scaledImage = logoIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         logo.setIcon(new ImageIcon(scaledImage));
-
+        //Logo Position
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
@@ -37,7 +37,7 @@ public class LoginScreen {
         gbc.fill = GridBagConstraints.CENTER;
         gbc.insets = new Insets(150, 10, 10, 10);
         frame.add(logo, gbc);
-
+        //Login Button position
         JButton loginButton = createLoginButton();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -47,7 +47,7 @@ public class LoginScreen {
         gbc.anchor = GridBagConstraints.CENTER;
         frame.add(loginButton, gbc);
     }
-
+    //Method to create the Login button
     private JButton createLoginButton() {
         //Login button setup
         JButton loginButton = new JButton("Login");
@@ -55,10 +55,9 @@ public class LoginScreen {
         loginButton.putClientProperty("JButton.buttonType", "roundRect");
         loginButton.setBackground(new Color(66, 135, 245));
         loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Tahoma", Font.BOLD, 14));
         return loginButton;
     }
-
+    //Method to resize the logo with the size of the window
     private void addResizeListener() {
         frame.addComponentListener(new ComponentAdapter() {
             @Override
@@ -70,7 +69,7 @@ public class LoginScreen {
             }
         });
     }
-
+    //Self-Explanatory
     public void show() {
         frame.setVisible(true);
     }

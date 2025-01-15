@@ -9,10 +9,14 @@ public class Main {
         } catch (Exception ex) {
             System.err.println("Failed to Initialize Laf");
         }
-
+        //Initialize swing and call the classes
         SwingUtilities.invokeLater(() -> {
            LoginScreen loginScreen = new LoginScreen();
            loginScreen.show();
+
+           DownloadWindow downloadWindow = new DownloadWindow();
+           downloadWindow.show();
+
         });
     }
 }
