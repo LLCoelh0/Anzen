@@ -1,5 +1,9 @@
+import com.google.api.client.http.javanet.NetHttpTransport;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -55,7 +59,30 @@ public class LoginScreen {
         loginButton.putClientProperty("JButton.buttonType", "roundRect");
         loginButton.setBackground(new Color(66, 135, 245));
         loginButton.setForeground(Color.WHITE);
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    authenticateUser();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Authentication failed: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         return loginButton;
+    }
+
+    private void authenticateUser() {
+        try {
+            NetHttpTransport httpTransport = new NetHttpTransport();
+            GoogleAuthenticator authenticator = new GoogleAuthenticator(httpTransport);
+            authenticator.getDriveService();
+            JOptionPane.showMessageDialog(frame, "Authentication successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(frame, "Authentication failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     //Method to resize the logo with the size of the window
     private void addResizeListener() {
