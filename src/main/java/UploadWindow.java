@@ -1,13 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class DownloadWindow {
+public class UploadWindow {
     private final JFrame frame;
     private final GridBagConstraints gbc;
 
-    public DownloadWindow() {
+    public UploadWindow() {
         //Window setup
-        frame = new JFrame("D");
+        frame = new JFrame("U");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, 720);
         frame.setLayout(new GridBagLayout());

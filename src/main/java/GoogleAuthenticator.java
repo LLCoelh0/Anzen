@@ -9,7 +9,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-
 import java.io.*;
 import java.util.Collections;
 import java.util.List;
@@ -18,21 +17,19 @@ public class GoogleAuthenticator {
     private static final String APPLICATION_NAME = "Anzen";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
     private final NetHttpTransport httpTransport;
-
+    //Constructor for the http transport
     public GoogleAuthenticator(NetHttpTransport httpTransport) {
         this.httpTransport = httpTransport;
     }
-
-    public Drive getDriveService() throws IOException {
+    //Create and return an GDrive service authenticated
+    public void getDriveService() throws IOException {
         Credential credential = getCredential();
-        return new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+        new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
     }
-
+    //Authenticate and return the user credentials
     private Credential getCredential() throws IOException {
         InputStream in = getClass().getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {

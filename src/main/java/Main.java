@@ -13,10 +13,6 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
            LoginScreen loginScreen = new LoginScreen();
            loginScreen.show();
-/**
-           DownloadWindow downloadWindow = new DownloadWindow();
-           downloadWindow.show();
-**/
         });
     }
 }
