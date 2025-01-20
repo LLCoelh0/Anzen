@@ -25,9 +25,9 @@ public class GoogleAuthenticator {
         this.httpTransport = httpTransport;
     }
     //Create and return an GDrive service authenticated
-    public void getDriveService() throws IOException {
+    public Drive getDriveService() throws IOException {
         Credential credential = getCredential();
-        new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+        return new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
     }
     //Authenticate and return the user credentials
     private Credential getCredential() throws IOException {

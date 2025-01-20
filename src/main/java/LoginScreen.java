@@ -1,4 +1,6 @@
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.services.drive.Drive;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -70,11 +72,11 @@ public class LoginScreen {
         try {
             NetHttpTransport httpTransport = new NetHttpTransport();
             GoogleAuthenticator authenticator = new GoogleAuthenticator(httpTransport);
-            authenticator.getDriveService();
+            Drive driveService = authenticator.getDriveService();
 
             JOptionPane.showMessageDialog(frame, "Authentication successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
-            new DownloadWindow().show();
+            new DownloadWindow(driveService).show();
         } catch (Exception ex){
             JOptionPane.showMessageDialog(frame, "Authentication failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

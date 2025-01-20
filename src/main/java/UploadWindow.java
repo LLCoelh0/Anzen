@@ -1,9 +1,12 @@
+import com.google.api.services.drive.Drive;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class UploadWindow {
     private final JFrame frame;
     private final GridBagConstraints gbc;
+    private Drive driveService;
 
     public UploadWindow() {
         //Window setup
@@ -81,7 +84,7 @@ public class UploadWindow {
 
         downloadButton.addActionListener(_ -> {
             frame.dispose();
-            new DownloadWindow().show();
+            new DownloadWindow(driveService).show();
         });
         return downloadButton;
     }
