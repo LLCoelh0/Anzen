@@ -116,38 +116,52 @@ public class DownloadWindow {
 
     private void loadFilesFromDrive() {
         try {
+            //Get the files list from the GDrive
             List<File> files = listFiles();
+
             filePanel.removeAll();
+            filePanel.setLayout(new BorderLayout());
 
             DefaultListModel<String> fileListModel = new DefaultListModel<>();
+            JList<String> fileList = new JList<>(fileListModel);
+            fileList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+            //Add the files in the list
             for (File file : files) {
                 fileListModel.addElement(file.getName() + " (ID " + file.getId() + ")");
             }
 
-            JList<String> fileList = new JList<>(fileListModel);
-            fileList.addListSelectionListener(e -> {
-                if (!e.getValueIsAdjusting()) {
-                    String selectedValue = fileList.getSelectedValue();
-                    if (selectedValue != null) {
-                        String fileId = selectedValue.substring(selectedValue.indexOf("ID ") + 3).replace(")", "").trim();
-                        JFileChooser fileChooser = new JFileChooser();
-                        fileChooser.setDialogTitle("Select where to save the file");
-                        int userSelection = fileChooser.showSaveDialog(frame);
-                        if (userSelection == JFileChooser.APPROVE_OPTION) {
-                            try {
-                                downloadFile(fileId, fileChooser.getSelectedFile().getAbsolutePath());
-                                JOptionPane.showMessageDialog(frame, "File downloaded successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                            } catch (IOException ex) {
-                                JOptionPane.showMessageDialog(frame, "Error while downloading file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                            }
+            JButton downloadSelectedButton = new JButton("Download Selected");
+            downloadSelectedButton.addActionListener(_ -> {
+                List<String> selectedValues = fileList.getSelectedValuesList();
+
+                if (!selectedValues.isEmpty()) {
+                    String downloadDirectory = "downloads";
+                    new java.io.File(downloadDirectory).mkdirs();
+
+                    for (String selectedValue : selectedValues) {
+                        try {
+                            String fileId = extractFileId(selectedValue);
+                            String fileName = extractFileName(selectedValue);
+
+                            String filePath = downloadDirectory + java.io.File.separator + fileName;
+
+                            downloadFile(fileId, filePath);
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(frame, "Error downloading file: " + ex.getMessage(),
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
+                    JOptionPane.showMessageDialog(frame, "Files downloaded successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "No files selected!", "Info", JOptionPane.INFORMATION_MESSAGE);
                 }
             });
 
             JScrollPane scrollPane = new JScrollPane(fileList);
-            filePanel.setLayout(new BorderLayout());
             filePanel.add(scrollPane, BorderLayout.CENTER);
+            filePanel.add(downloadSelectedButton, BorderLayout.SOUTH);
+
             filePanel.revalidate();
             filePanel.repaint();
         } catch (IOException ex) {
@@ -161,12 +175,20 @@ public class DownloadWindow {
         return result.getFiles();
     }
 
-    private void downloadFile(String fileId, String path) throws IOException {
-        try (OutputStream outputStream = new FileOutputStream(path)) {
+    private void downloadFile(String fileId, String filePath) throws IOException {
+        try (OutputStream outputStream = new FileOutputStream(filePath)) {
             driveService.files().get(fileId).executeMediaAndDownloadTo(outputStream);
         } catch (IOException ex) {
             throw new IOException("Error while downloading file " + fileId + ": " + ex.getMessage(), ex);
         }
+    }
+
+    private String extractFileName(String selectedValue) {
+        return selectedValue.substring(selectedValue.indexOf("(ID: ") + 5, selectedValue.length() - 1);
+    }
+
+    private String extractFileId(String selectedValue) {
+        return selectedValue.substring(0, selectedValue.indexOf("(ID: "));
     }
 
     //Text Area Method
